@@ -10,34 +10,56 @@
 
 namespace choreonoid_viewer {
   void Viewer::objects(const std::unordered_set<cnoid::BodyPtr>& objs){
+    // choreonoidが起動していないときは何もしない
+    if(!QCoreApplication::instance()) return;
+
     this->nextObjects_ = objs;
   }
   void Viewer::objects(const std::vector<cnoid::BodyPtr>& objs){
+    // choreonoidが起動していないときは何もしない
+    if(!QCoreApplication::instance()) return;
+
     this->nextObjects_ = std::unordered_set<cnoid::BodyPtr>(objs.begin(),objs.end());
   }
   void Viewer::objects(cnoid::BodyPtr obj){
+    // choreonoidが起動していないときは何もしない
+    if(!QCoreApplication::instance()) return;
+
     this->nextObjects_.insert(obj);
   }
 
   void Viewer::drawOn(const std::unordered_set<cnoid::SgNodePtr>& objs){
+    // choreonoidが起動していないときは何もしない
+    if(!QCoreApplication::instance()) return;
+
     this->nextDrawOn_ = objs;
   }
   void Viewer::drawOn(const std::vector<cnoid::SgNodePtr>& objs){
+    // choreonoidが起動していないときは何もしない
+    if(!QCoreApplication::instance()) return;
+
     this->nextDrawOn_ = std::unordered_set<cnoid::SgNodePtr>(objs.begin(),objs.end());
   }
   void Viewer::drawOn(cnoid::SgNodePtr obj){
+    // choreonoidが起動していないときは何もしない
+    if(!QCoreApplication::instance()) return;
+
     this->nextDrawOn_.insert(obj);
   }
 
   void Viewer::drawObjects(bool flush){
     // choreonoidが起動していないときは何もしない
     if(!QCoreApplication::instance()) return;
+
     cnoid::callSynchronously([&](){this->notify();});
 
     if(flush) this->flush();
   }
 
   void Viewer::flush(){
+    // choreonoidが起動していないときは何もしない
+    if(!QCoreApplication::instance()) return;
+
     QCoreApplication::processEvents(QEventLoop::AllEvents);
   }
 

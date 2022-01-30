@@ -4,8 +4,8 @@
 #include <cnoid/LazyCaller>
 #include <cnoid/ItemManager>
 
-namespace cnoid {
-  void ViewerBaseItem::initializeClass(ExtensionManager* ext)
+namespace choreonoid_viewer {
+  void ViewerBaseItem::initializeClass(cnoid::ExtensionManager* ext)
   {
     ext->itemManager()
       .registerClass<ViewerBaseItem>("ViewerBaseItem");

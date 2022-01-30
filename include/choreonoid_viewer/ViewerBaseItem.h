@@ -4,12 +4,12 @@
 #include <cnoid/Item>
 #include <thread>
 
-namespace cnoid {
+namespace choreonoid_viewer {
 
-  class ViewerBaseItem : public Item
+  class ViewerBaseItem : public cnoid::Item
   {
   public:
-    static void initializeClass(ExtensionManager* ext);
+    static void initializeClass(cnoid::ExtensionManager* ext);
 
     ViewerBaseItem();
 
@@ -23,7 +23,7 @@ namespace cnoid {
     std::thread thread_;
   };
 
-  typedef ref_ptr<ViewerBaseItem> ViewerBaseItemPtr;
+  typedef cnoid::ref_ptr<ViewerBaseItem> ViewerBaseItemPtr;
 }
 
 #endif

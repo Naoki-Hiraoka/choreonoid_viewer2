@@ -4,12 +4,12 @@
 #include <choreonoid_viewer/choreonoid_viewer.h>
 #include "choreonoid_viewer_sample_lib.h"
 
-namespace cnoid{
+namespace choreonoid_viewer{
 
-    class ViewerSampleItem : public ViewerBaseItem
+  class ViewerSampleItem : public choreonoid_viewer::ViewerBaseItem
   {
   public:
-    static void initializeClass(ExtensionManager* ext){
+    static void initializeClass(cnoid::ExtensionManager* ext){
       ext->itemManager().registerClass<ViewerSampleItem>("ViewerSampleItem");
     }
   protected:
@@ -17,9 +17,9 @@ namespace cnoid{
       mymain();
     }
   };
-  typedef ref_ptr<ViewerSampleItem> ViewerSampleItemPtr;
+  typedef cnoid::ref_ptr<ViewerSampleItem> ViewerSampleItemPtr;
 
-  class ViewerSamplePlugin : public Plugin
+  class ViewerSamplePlugin : public cnoid::Plugin
   {
   public:
 
@@ -37,4 +37,4 @@ namespace cnoid{
 
 }
 
-CNOID_IMPLEMENT_PLUGIN_ENTRY(cnoid::ViewerSamplePlugin)
+CNOID_IMPLEMENT_PLUGIN_ENTRY(choreonoid_viewer::ViewerSamplePlugin)

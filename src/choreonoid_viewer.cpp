@@ -63,6 +63,21 @@ namespace choreonoid_viewer {
     QCoreApplication::processEvents(QEventLoop::AllEvents);
   }
 
+  class LinkState{
+  public:
+    double q;
+    double u;
+    double dq;
+    double ddq;
+    double q_target;
+    double dq_target;
+    cnoid::Vector3 v;
+    cnoid::Vector3 w;
+    cnoid::Vector3 dv;
+    cnoid::Vector3 dw;
+    cnoid::Vector6 F_ext;
+  };
+
   void Viewer::notify(){
     // 消滅したobjectsを削除
     for(std::unordered_map<cnoid::BodyPtr, cnoid::BodyItemPtr>::iterator it=this->currentObjects_.begin(); it != this->currentObjects_.end();){
@@ -78,7 +93,44 @@ namespace choreonoid_viewer {
       if(this->currentObjects_.find(*it) != this->currentObjects_.end()) continue;
 
       cnoid::BodyItemPtr bodyItem = new cnoid::BodyItem();
-      bodyItem->setBody(*it);
+      {
+        // 今の状態を保存
+        cnoid::Position rootT = (*it)->rootLink()->T();
+        std::vector<LinkState> linkStates;
+        for(int i=0;i<(*it)->numLinks();i++){
+          LinkState linkState;
+          linkState.q = (*it)->link(i)->q();
+          linkState.u = (*it)->link(i)->u();
+          linkState.dq = (*it)->link(i)->dq();
+          linkState.ddq = (*it)->link(i)->ddq();
+          linkState.q_target = (*it)->link(i)->q_target();
+          linkState.dq_target = (*it)->link(i)->dq_target();
+          linkState.v = (*it)->link(i)->v();
+          linkState.w = (*it)->link(i)->w();
+          linkState.dv = (*it)->link(i)->dv();
+          linkState.dw = (*it)->link(i)->dw();
+          linkState.F_ext = (*it)->link(i)->F_ext();
+          linkStates.push_back(linkState);
+        }
+        bodyItem->setBody(*it); // Body::InitializePositionが呼ばれてしまうので、戻す必要がある
+        // 今の状態に戻す
+        (*it)->rootLink()->T() = rootT;
+        for(int i=0;i<(*it)->numLinks();i++){
+          (*it)->link(i)->q() = linkStates[i].q;
+          (*it)->link(i)->u() = linkStates[i].u;
+          (*it)->link(i)->dq() = linkStates[i].dq;
+          (*it)->link(i)->ddq() = linkStates[i].ddq;
+          (*it)->link(i)->q_target() = linkStates[i].q_target;
+          (*it)->link(i)->dq_target() = linkStates[i].dq_target;
+          (*it)->link(i)->v() = linkStates[i].v;
+          (*it)->link(i)->w() = linkStates[i].w;
+          (*it)->link(i)->dv() = linkStates[i].dv;
+          (*it)->link(i)->dw() = linkStates[i].dw;
+          (*it)->link(i)->F_ext() = linkStates[i].F_ext;
+        }
+        (*it)->calcForwardKinematics(true, true);
+        //initializeDeviceStatesの対応もした方がいい? TODO
+      }
       cnoid::RootItem::instance()->addChildItem(bodyItem);
       cnoid::ItemTreeView::instance()->checkItem(bodyItem, true);
       this->currentObjects_[*it] = bodyItem;

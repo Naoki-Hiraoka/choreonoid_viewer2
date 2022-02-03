@@ -13,17 +13,23 @@ namespace choreonoid_viewer {
     // choreonoidが起動していないときは何もしない
     if(!QCoreApplication::instance()) return;
 
+    std::lock_guard<std::mutex> guard(this->mutex_);
+
     this->nextObjects_ = objs;
   }
   void Viewer::objects(const std::vector<cnoid::BodyPtr>& objs){
     // choreonoidが起動していないときは何もしない
     if(!QCoreApplication::instance()) return;
 
+    std::lock_guard<std::mutex> guard(this->mutex_);
+
     this->nextObjects_ = std::unordered_set<cnoid::BodyPtr>(objs.begin(),objs.end());
   }
   void Viewer::objects(cnoid::BodyPtr obj){
     // choreonoidが起動していないときは何もしない
     if(!QCoreApplication::instance()) return;
+
+    std::lock_guard<std::mutex> guard(this->mutex_);
 
     this->nextObjects_.insert(obj);
   }
@@ -32,11 +38,15 @@ namespace choreonoid_viewer {
     // choreonoidが起動していないときは何もしない
     if(!QCoreApplication::instance()) return;
 
+    std::lock_guard<std::mutex> guard(this->mutex_);
+
     this->nextDrawOn_ = objs;
   }
   void Viewer::drawOn(const std::vector<cnoid::SgNodePtr>& objs){
     // choreonoidが起動していないときは何もしない
     if(!QCoreApplication::instance()) return;
+
+    std::lock_guard<std::mutex> guard(this->mutex_);
 
     this->nextDrawOn_ = std::unordered_set<cnoid::SgNodePtr>(objs.begin(),objs.end());
   }
@@ -44,12 +54,16 @@ namespace choreonoid_viewer {
     // choreonoidが起動していないときは何もしない
     if(!QCoreApplication::instance()) return;
 
+    std::lock_guard<std::mutex> guard(this->mutex_);
+
     this->nextDrawOn_.insert(obj);
   }
 
   void Viewer::drawObjects(bool flush){
     // choreonoidが起動していないときは何もしない
     if(!QCoreApplication::instance()) return;
+
+    std::lock_guard<std::mutex> guard(this->mutex_);
 
     cnoid::callSynchronously([&](){this->notify();});
 
@@ -59,6 +73,8 @@ namespace choreonoid_viewer {
   void Viewer::flush(){
     // choreonoidが起動していないときは何もしない
     if(!QCoreApplication::instance()) return;
+
+    //std::lock_guard<std::mutex> guard(this->mutex_);
 
     QCoreApplication::processEvents(QEventLoop::AllEvents);
   }

@@ -1,6 +1,7 @@
 #ifndef CHOREONOID_VIEWER_H
 #define CHOREONOID_VIEWER_H
 
+#include <mutex>
 #include <cnoid/SceneDrawables>
 #include <cnoid/BodyItem>
 #include <unordered_set>
@@ -9,6 +10,7 @@
 
 namespace choreonoid_viewer {
 
+  // 各メンバ関数はthread safeにする
   class Viewer {
   public:
     void objects(const std::unordered_set<cnoid::BodyPtr>& objs); // objectsをすべて消して新しくする
@@ -32,6 +34,8 @@ namespace choreonoid_viewer {
     std::unordered_map<cnoid::BodyPtr, cnoid::BodyItemPtr> currentObjects_;
     std::unordered_set<cnoid::SgNodePtr> currentDrawOn_;
     cnoid::SgGroupPtr markerGroup_;
+
+    std::mutex mutex_;
   };
 }
 

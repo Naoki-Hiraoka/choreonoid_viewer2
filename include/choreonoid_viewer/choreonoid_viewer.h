@@ -26,7 +26,7 @@ namespace choreonoid_viewer {
     void flush(); // 今,描画を更新する. main threadで実行する必要がある. 別threadで実行している場合は、flushを呼ばなくても勝手に更新されるはず
 
   protected:
-    void notify();
+    void notify(bool flush);
 
     std::unordered_set<cnoid::BodyPtr> nextObjects_;
     std::unordered_set<cnoid::SgNodePtr> nextDrawOn_;

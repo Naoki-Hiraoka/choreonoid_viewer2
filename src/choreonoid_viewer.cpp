@@ -65,9 +65,7 @@ namespace choreonoid_viewer {
 
     std::lock_guard<std::mutex> guard(this->mutex_);
 
-    cnoid::callSynchronously([&](){this->notify();});
-
-    if(flush) this->flush();
+    cnoid::callSynchronously([&](){this->notify(flush);});
   }
 
   void Viewer::flush(){
@@ -94,7 +92,7 @@ namespace choreonoid_viewer {
     cnoid::Vector6 F_ext;
   };
 
-  void Viewer::notify(){
+  void Viewer::notify(bool flush){
     // 消滅したobjectsを削除
     for(std::unordered_map<cnoid::BodyPtr, cnoid::BodyItemPtr>::iterator it=this->currentObjects_.begin(); it != this->currentObjects_.end();){
       if(this->nextObjects_.find(it->first) != this->nextObjects_.end()) it++;
@@ -181,6 +179,8 @@ namespace choreonoid_viewer {
     for(std::unordered_set<cnoid::SgNodePtr>::iterator it= this->currentDrawOn_.begin(); it != this->currentDrawOn_.end(); it++){
       (*it)->notifyUpdate();
     }
+
+    if(flush) this->flush();
   }
 }
 

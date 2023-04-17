@@ -74,7 +74,11 @@ namespace choreonoid_viewer {
 
     //std::lock_guard<std::mutex> guard(this->mutex_);
 
-    QCoreApplication::processEvents(QEventLoop::AllEvents);
+    if(cnoid::isRunningInMainThread()){
+      QCoreApplication::processEvents(QEventLoop::AllEvents);
+    }else{
+      cnoid::callSynchronously([&](){this->flush();});
+    }
   }
 
   class LinkState{

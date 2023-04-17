@@ -23,7 +23,7 @@ namespace choreonoid_viewer {
 
     void drawObjects(bool flush=false); // 描画対象を更新する. calcForwardKinematicsは自分で呼ぶこと
 
-    void flush(); // 今,描画を更新する. main threadで実行する必要がある. 別threadで実行している場合は、flushを呼ばなくても勝手に更新されるはず
+    void flush(); // 今,描画を更新する. main thread以外で実行している場合は、flushを呼ばなくても勝手に更新されるはずだが、robotなどの姿勢がすぐに変化する場合には、変化前に描画を更新する必要があるので、flushを呼んだ方がいい.
 
   protected:
     void notify(bool flush);

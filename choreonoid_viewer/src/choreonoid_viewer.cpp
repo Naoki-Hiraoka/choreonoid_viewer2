@@ -4,6 +4,7 @@
 #include <cnoid/RootItem>
 #include <cnoid/SceneProvider>
 #include <cnoid/SceneView>
+#include <cnoid/SceneWidget>
 #include <cnoid/LazyCaller>
 #include <cnoid/ItemTreeView>
 #include <iostream>
@@ -101,7 +102,7 @@ namespace choreonoid_viewer {
     for(std::unordered_map<cnoid::BodyPtr, cnoid::BodyItemPtr>::iterator it=this->currentObjects_.begin(); it != this->currentObjects_.end();){
       if(this->nextObjects_.find(it->first) != this->nextObjects_.end()) it++;
       else{
-        it->second->detachFromParentItem();
+        it->second->removeFromParentItem();
         it = this->currentObjects_.erase(it);
       }
     }
@@ -113,7 +114,7 @@ namespace choreonoid_viewer {
       cnoid::BodyItemPtr bodyItem = new cnoid::BodyItem();
       {
         // 今の状態を保存
-        cnoid::Position rootT = (*it)->rootLink()->T();
+        cnoid::Isometry3 rootT = (*it)->rootLink()->T();
         std::vector<LinkState> linkStates;
         for(int i=0;i<(*it)->numLinks();i++){
           LinkState linkState;
@@ -150,7 +151,7 @@ namespace choreonoid_viewer {
         //initializeDeviceStatesの対応もした方がいい? TODO
       }
       cnoid::RootItem::instance()->addChildItem(bodyItem);
-      cnoid::ItemTreeView::instance()->checkItem(bodyItem, true);
+      bodyItem->setChecked(true);
       this->currentObjects_[*it] = bodyItem;
     }
 

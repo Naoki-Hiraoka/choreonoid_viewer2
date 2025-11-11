@@ -1,1 +1,5 @@
-int mymain();
+namespace choreonoid_viewer_sample{
+
+  int mymain();
+
+}

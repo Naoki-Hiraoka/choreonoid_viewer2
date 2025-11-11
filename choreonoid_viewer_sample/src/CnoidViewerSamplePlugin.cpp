@@ -4,7 +4,7 @@
 #include <choreonoid_viewer/choreonoid_viewer.h>
 #include "choreonoid_viewer_sample_lib.h"
 
-namespace choreonoid_viewer{
+namespace choreonoid_viewer_sample{
 
   class ViewerSampleItem : public choreonoid_viewer::ViewerBaseItem
   {
@@ -37,4 +37,4 @@ namespace choreonoid_viewer{
 
 }
 
-CNOID_IMPLEMENT_PLUGIN_ENTRY(choreonoid_viewer::ViewerSamplePlugin)
+CNOID_IMPLEMENT_PLUGIN_ENTRY(choreonoid_viewer_sample::ViewerSamplePlugin)

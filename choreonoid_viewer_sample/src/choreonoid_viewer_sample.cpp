@@ -1,6 +1,6 @@
 #include "choreonoid_viewer_sample_lib.h"
 
 int main(void){
-  mymain();
+  choreonoid_viewer_sample::mymain();
   return 0;
 }

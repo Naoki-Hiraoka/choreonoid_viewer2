@@ -5,6 +5,7 @@
 #include <cnoid/ItemManager>
 
 namespace choreonoid_viewer {
+
   void ViewerBaseItem::initializeClass(cnoid::ExtensionManager* ext)
   {
     ext->itemManager()

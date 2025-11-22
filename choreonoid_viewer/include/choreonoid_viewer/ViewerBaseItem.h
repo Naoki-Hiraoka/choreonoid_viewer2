@@ -3,6 +3,7 @@
 
 #include <cnoid/Item>
 #include <thread>
+#include <cnoid/SimulatorItem>
 
 namespace choreonoid_viewer {
 

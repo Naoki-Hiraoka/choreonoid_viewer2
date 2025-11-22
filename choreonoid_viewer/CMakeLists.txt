@@ -28,6 +28,7 @@ include_directories(
 add_library(${PROJECT_NAME}
   src/choreonoid_viewer.cpp
   src/ViewerBaseItem.cpp
+  src/DoNotingSimulatorItem.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -46,8 +47,13 @@ install(DIRECTORY include/${PROJECT_NAME}/
   FILES_MATCHING PATTERN "*.h"
 )
 
-#############
-## Testing ##
-#############
 
-#add_subdirectory(sample)
+add_library(CnoidViewerPlugin SHARED
+  src/CnoidViewerPlugin.cpp
+  )
+target_link_libraries(CnoidViewerPlugin
+  ${catkin_LIBRARIES}
+  ${CHOREONOID_BODY_PLUGIN_LIBRARIES}
+  ${PROJECT_NAME}
+  )
+set_target_properties(CnoidViewerPlugin PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CHOREONOID_PLUGIN_DIR})

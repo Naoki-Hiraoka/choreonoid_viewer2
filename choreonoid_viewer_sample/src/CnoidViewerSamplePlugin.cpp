@@ -26,6 +26,7 @@ namespace choreonoid_viewer_sample{
     ViewerSamplePlugin() : Plugin("ViewerSample")
     {
       require("Body");
+      require("Viewer");
     }
     virtual bool initialize() override
     {

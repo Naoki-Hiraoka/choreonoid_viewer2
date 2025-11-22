@@ -19,6 +19,7 @@ namespace choreonoid_viewer {
   class Viewer {
   public:
     Viewer();
+    ~Viewer();
     void objects(const std::unordered_set<cnoid::BodyPtr>& objs); // objectsをすべて消して新しくする
     void objects(const std::vector<cnoid::BodyPtr>& objs); // objectsをすべて消して新しくする
     void objects(cnoid::BodyPtr obj); // objectsに追加する

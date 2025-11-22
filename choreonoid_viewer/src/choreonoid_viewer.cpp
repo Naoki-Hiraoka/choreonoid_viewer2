@@ -72,6 +72,26 @@ namespace choreonoid_viewer {
       ;});
   }
 
+  Viewer::~Viewer(){
+    // choreonoidが起動していないときは何もしない
+    if(!QCoreApplication::instance()) return;
+
+    cnoid::callSynchronously([&](){
+      for(std::unordered_map<cnoid::BodyPtr, cnoid::BodyItemPtr>::iterator it = this->currentObjects_.begin(); it != this->currentObjects_.end(); it++){
+        it->second->removeFromParentItem();
+      }
+      for(std::unordered_set<cnoid::SgNodePtr>::iterator it= this->currentDrawOn_.begin(); it != this->currentDrawOn_.end(); it++){
+        this->markerGroup_->removeChild(*it);
+      }
+      for(std::unordered_map<cnoid::DevicePtr, cnoid::GLVisionSimulatorItemPtr>::iterator it=this->currentCameras_.begin(); it != this->currentCameras_.end();it++){
+        it->second->removeFromParentItem();
+      }
+      cnoid::SceneView::instance()->sceneWidget()->sceneRoot()->removeChild(this->markerGroup_);
+      this->simulatorItem_->removeFromParentItem();
+      this->worldItem_->removeFromParentItem();
+                             });
+  }
+
   void Viewer::objects(const std::unordered_set<cnoid::BodyPtr>& objs){
     // choreonoidが起動していないときは何もしない
     if(!QCoreApplication::instance()) return;

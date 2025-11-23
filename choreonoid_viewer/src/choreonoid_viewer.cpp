@@ -8,6 +8,7 @@
 #include <cnoid/LazyCaller>
 #include <cnoid/ItemTreeView>
 #include <cnoid/Camera>
+#include <cnoid/RangeCamera>
 #include <cnoid/RangeSensor>
 #include <iostream>
 
@@ -52,11 +53,18 @@ namespace choreonoid_viewer {
           cnoid::DevicePtr simDevice = simBody->body()->findDevice(device->name());
           simDevice->sigStateChanged().connect([device, bodyItem, simBody, simDevice]{
                                                  cnoid::CameraPtr camera = cnoid::dynamic_pointer_cast<cnoid::Camera>(device);
+                                                 cnoid::RangeCameraPtr rangeCamera = cnoid::dynamic_pointer_cast<cnoid::RangeCamera>(device);
                                                  cnoid::RangeSensorPtr rangeSensor = cnoid::dynamic_pointer_cast<cnoid::RangeSensor>(device);
                                                  if(camera){
                                                    cnoid::CameraPtr cameraSim = cnoid::dynamic_pointer_cast<cnoid::Camera>(simDevice);
                                                    std::shared_ptr<cnoid::Image> image = std::make_shared<cnoid::Image>(cameraSim->constImage());
                                                    camera->setImage(image);
+                                                   if(rangeCamera){
+                                                     cnoid::RangeCameraPtr rangeCameraSim = cnoid::dynamic_pointer_cast<cnoid::RangeCamera>(simDevice);
+                                                     std::shared_ptr<std::vector<cnoid::Vector3f> > points = std::make_shared<std::vector<cnoid::Vector3f> >(rangeCameraSim->constPoints());
+                                                     rangeCamera->setPoints(points);
+                                                     rangeCamera->setDense(rangeCameraSim->isDense());
+                                                   }
                                                  }else if(rangeSensor){
                                                    cnoid::RangeSensorPtr rangeSensorSim = cnoid::dynamic_pointer_cast<cnoid::RangeSensor>(simDevice);
                                                    std::shared_ptr<cnoid::RangeSensor::RangeData> rangeData = std::make_shared<cnoid::RangeSensor::RangeData>(rangeSensorSim->rangeData());
@@ -320,7 +328,8 @@ namespace choreonoid_viewer {
         cnoid::GLVisionSimulatorItemPtr gLVisionSimulatorItem = new cnoid::GLVisionSimulatorItem();
         gLVisionSimulatorItem->setTargetBodies((*it)->body()->name());
         gLVisionSimulatorItem->setTargetSensors((*it)->name());
-        gLVisionSimulatorItem->setThreadMode(cnoid::GLVisionSimulatorItem::ThreadMode::SINGLE_THREAD_MODE);
+        gLVisionSimulatorItem->setMaxLatency(0.0); // レンダリングはマルチスレッドで非同期で行われ、レンダリング完了後のpostDynamics時に更新される. BestEffortMode=falseの時、レンダリング開始からmin(1/frameRate,maxLatency) step経過しても完了していない場合、レンダリング完了を待つ同期が行われる. flush()実行後にレンダリング結果が受け取れていることを保証したいので、maxlatency=0とする.
+        gLVisionSimulatorItem->setBestEffortMode(false);
         this->simulatorItem_->addChildItem(gLVisionSimulatorItem);
         this->currentCameras_[*it] = gLVisionSimulatorItem;
         stopSimulationRequired = true;
